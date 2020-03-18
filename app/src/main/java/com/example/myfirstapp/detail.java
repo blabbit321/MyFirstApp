@@ -7,18 +7,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 import java.util.ArrayList;
 
 public class detail extends AppCompatActivity {
 
     private String TAG;
+    private TextView mTitle;
     private TextView mSymbol;
     private TextView mName;
     private TextView mValue;
@@ -28,26 +27,34 @@ public class detail extends AppCompatActivity {
     private TextView mMarket;
     private TextView mVolume;
     private ImageView mSearch;
+    private Coin mCoin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        final Intent intent = getIntent();
-        final  String cSymbol = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-
-
+         Intent intent = getIntent();
+        int position = intent.getIntExtra(MainActivity.EXTRA_MESSAGE, 0);
         ArrayList<Coin> coins = Coin.getCoins();
-        final Coin coin = Coin.searchCoin(cSymbol);
+        mCoin=coins.get(position);
+
+
+       // final  String cSymbol = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+
+
+
+         Coin coin = Coin.searchCoin(mCoin.getSymbol());
          Log.i(TAG, "Coin-Symbol = " + coin.getSymbol());
+
+
 
          mSearch = (ImageView) findViewById(R.id.tvSearch);
 
         mSymbol = (TextView) findViewById(R.id.coinSymbol);
         mName = (TextView) findViewById(R.id.title);
-        mSymbol.setText(cSymbol);
+        mSymbol.setText(coin.getSymbol());
         mValue = (TextView) findViewById(R.id.tvValueField);
 
         mValue.setText("$"+ coin.getValue());
@@ -59,6 +66,10 @@ public class detail extends AppCompatActivity {
 
         mChange7d = (TextView) findViewById(R.id.tv7d);
         mChange7d.setText(coin.getChange7d()+"%");
+
+        mTitle = (TextView) findViewById(R.id.title);
+        mTitle.setText(coin.getName());
+
 
 
 
@@ -73,6 +84,8 @@ public class detail extends AppCompatActivity {
         mVolume.setText("$"+volume);
 
 
+
+
         mSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +96,7 @@ public class detail extends AppCompatActivity {
         mSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                search(cSymbol);
+                search(mCoin.getSymbol());
             }
         });
 
