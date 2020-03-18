@@ -1,6 +1,9 @@
 package com.example.myfirstapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -36,82 +39,22 @@ public class detail extends AppCompatActivity {
 
          Intent intent = getIntent();
         int position = intent.getIntExtra(MainActivity.EXTRA_MESSAGE, 0);
-        ArrayList<Coin> coins = Coin.getCoins();
-        mCoin=coins.get(position);
-
-
-       // final  String cSymbol = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-
-
-
-         Coin coin = Coin.searchCoin(mCoin.getSymbol());
-         Log.i(TAG, "Coin-Symbol = " + coin.getSymbol());
-
-
-
-         mSearch = (ImageView) findViewById(R.id.tvSearch);
-
-        mSymbol = (TextView) findViewById(R.id.coinSymbol);
-        mName = (TextView) findViewById(R.id.title);
-        mSymbol.setText(coin.getSymbol());
-        mValue = (TextView) findViewById(R.id.tvValueField);
-
-        mValue.setText("$"+ coin.getValue());
-        mChange = (TextView) findViewById(R.id.tvChangeField);
-        mChange.setText(coin.getChange1h()+"%");
-
-        mChange24 = (TextView) findViewById(R.id.tvChange24);
-        mChange24.setText(coin.getChange24h()+"%");
-
-        mChange7d = (TextView) findViewById(R.id.tv7d);
-        mChange7d.setText(coin.getChange7d()+"%");
-
-        mTitle = (TextView) findViewById(R.id.title);
-        mTitle.setText(coin.getName());
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Fragment fragment = new myFragment();
+        Bundle arguments = new Bundle();
+        arguments.putInt("position", position);
+        fragment.setArguments(arguments);
+        transaction.replace(R.id.scrollView2, fragment);
+        transaction.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.scrollView2, fragment).commit();
 
 
 
 
-        DecimalFormat formatter = new DecimalFormat("#,###,###.##");
-        String volume = formatter.format(coin.getVolume());
-        String market = formatter.format(coin.getMarketcap());
-
-        mMarket = (TextView) findViewById(R.id.tvMarket);
-        mMarket.setText("$"+market);
-
-        mVolume = (TextView) findViewById(R.id.tvVolume);
-        mVolume.setText("$"+volume);
 
 
 
 
-        mSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
-
-        mSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search(mCoin.getSymbol());
-            }
-        });
-
-
-
-
-        }
-        private void search(String google){
-        String query = "https://www.google.com/search?q=" + google;
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(query));
-        startActivity(intent);
-
-
-    }
-
-
-
-}
+}}
