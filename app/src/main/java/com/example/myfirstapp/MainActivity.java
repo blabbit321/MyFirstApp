@@ -1,68 +1,57 @@
 package com.example.myfirstapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "CryptoBag";
     public static final String EXTRA_MESSAGE = "au.edu.unsw.infs3634.beers.MESSAGE";
-    private Button nButton;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private Boolean wideScreen;
+    private boolean wideScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mRecyclerView = findViewById(R.id.rvList);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        wideScreen = findViewById(R.id.detailContainer) != null
-        ;
-        Log.d(TAG,"onCreate:wide? = " + wideScreen);
-        CoinAdapter.RecyclerViewClickListener listener = new CoinAdapter.RecyclerViewClickListener(){
+        wideScreen = findViewById(R.id.detailContainer) != null;
+        CoinAdapter.RecyclerViewClickListener listener = new CoinAdapter.RecyclerViewClickListener() {
             @Override
-                    public void onClick(View view, int position) {
+            public void onClick(View view, int position) {
                 if (wideScreen) {
-                    final FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    Bundle arguments = new Bundle();
-                    arguments.putInt("position",position);
-                    myFragment fragment = new myFragment();
-                    fragment.setArguments(arguments);
-                    transaction.replace(R.id.detailContainer, fragment);
+                    FragmentManager manager = getSupportFragmentManager();
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    Fragment myFragment = new myFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("POSITION", position);
+                    myFragment.setArguments(bundle);
+                    transaction.replace(R.id.detailContainer, myFragment);
                     transaction.commit();
-                } else {
+                }
+                else {
                     launchDetailActivity(position);
                 }
             }
         };
-        mAdapter=new CoinAdapter(Coin.getCoins(), listener);
+        mAdapter = new CoinAdapter(Coin.getCoins(), listener);
         mRecyclerView.setAdapter(mAdapter);
-
     }
 
-    private void launchDetailActivity(int position) {
+    private void launchDetailActivity(int message) {
         Intent intent = new Intent(this, detail.class);
-        intent.putExtra(EXTRA_MESSAGE, position);
+        intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
+
     }
-
-
-
 }
-
